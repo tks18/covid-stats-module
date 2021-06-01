@@ -10,15 +10,10 @@ const config = {
   access_token_secret: process.env.ACCESS_KEY,
 };
 
-tweets = [];
-for (let i = 0; i < 60; i++) {
-  tweets.push({ text: `this is a thread ${i}/n` });
-}
-
 async function tweetThread() {
   const t = new TwitThread(config);
 
-  await t.tweetThread(tweets);
+  await t.tweetThread([{ text: `This is a Test Tweet from the API` }]);
 }
 
 tweetThread();
