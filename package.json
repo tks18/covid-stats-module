@@ -25,7 +25,9 @@
   },
   "homepage": "https://github.com/tks18/twitter-vaccine-stats-bot#readme",
   "dependencies": {
+    "axios": "^0.21.1",
     "dotenv": "^10.0.0",
+    "human-format": "^0.11.0",
     "twit-thread": "^2.1.0"
   }
 }
