@@ -10,8 +10,8 @@ async function getData() {
   let responses = await getVaccineData();
   let constructedData = constructData(responses);
   let tweets = constructMessage(constructedData);
-  let tweetresponse = await tweeter(config, tweets);
-  console.log(tweetresponse);
+  // let tweetresponse = await tweeter(config, tweets);
+  console.log(tweets);
 }
 
 getData();

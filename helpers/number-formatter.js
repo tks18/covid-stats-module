@@ -2,9 +2,8 @@ const humanFormat = require('human-format');
 
 let numberScale = new humanFormat.Scale({
   K: 1000,
-  Mn: 1000000,
-  Bn: 1000000000,
-  T: 1000000000000,
+  Lacs: 100000,
+  Crores: 10000000,
 });
 
 module.exports = (number) => {

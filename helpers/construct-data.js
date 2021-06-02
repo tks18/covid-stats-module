@@ -6,7 +6,7 @@ module.exports = (vaccineData) => {
   let yestData = vaccineData.yesterday;
 
   let overallVaccinationsStats = {
-    date: dateFormatter(todayData.timestamp),
+    date: dateFormatter(todayData.timestamp, true),
     tillDate: {
       dose1: {
         num: todayData.topBlock.vaccination.tot_dose_1,
@@ -81,7 +81,7 @@ module.exports = (vaccineData) => {
         text: numberFormatter(todayData.topBlock.vaccination.covishield),
         perc: `${+(
           todayData.topBlock.vaccination.covishield /
-          todayData.topBlock.vaccination.today
+          todayData.topBlock.vaccination.total
         ).toFixed(2)}%`,
       },
       covaxin: {
@@ -89,7 +89,7 @@ module.exports = (vaccineData) => {
         text: numberFormatter(todayData.topBlock.vaccination.covaxin),
         perc: `${+(
           todayData.topBlock.vaccination.covaxin /
-          todayData.topBlock.vaccination.today
+          todayData.topBlock.vaccination.total
         ).toFixed(2)}%`,
       },
       sputnik: {
@@ -97,8 +97,8 @@ module.exports = (vaccineData) => {
         text: numberFormatter(todayData.topBlock.vaccination.sputnik),
         perc: `${+(
           todayData.topBlock.vaccination.sputnik /
-          todayData.topBlock.vaccination.today
-        ).toFixed(2)}%`,
+          todayData.topBlock.vaccination.total
+        ).toFixed(4)}%`,
       },
     },
   };
