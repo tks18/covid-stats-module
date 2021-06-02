@@ -1,5 +1,5 @@
 module.exports = (state = null, district = null, date) => {
-  let url = process.env.API_URL;
+  const url = process.env.API_URL;
   let constructedUrl;
   if (
     (state === null || !Number.isInteger(state)) &&

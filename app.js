@@ -1,17 +1,30 @@
+// Inititalisation
 require('dotenv').config();
+const express = require('express');
+const helmet = require('helmet');
+const mongoSanitize = require('express-mongo-sanitize');
+const xss = require('xss-clean');
 
-const config = require('./configs/twitter-config');
-const tweeter = require('./helpers/tweeter');
-const { getVaccineData } = require('./helpers/api');
-const constructData = require('./helpers/construct-data');
-const constructMessage = require('./helpers/construct-message');
+// Express Configs
+const app = express();
+app.use(express.json({ limit: '50kb' }));
+app.use(helmet());
+app.use(mongoSanitize());
+app.use(xss());
 
-async function getData() {
-  let responses = await getVaccineData();
-  let constructedData = constructData(responses);
-  let tweets = constructMessage(constructedData);
-  // let tweetresponse = await tweeter(config, tweets);
-  console.log(tweets);
-}
+// Cors
+app.use((req, res, next) => {
+  res.setHeader('Access-Control-Allow-Methods', '');
+  res.setHeader('Access-Control-Allow-Headers', '');
+  res.setHeader('Access-Control-Allow-Credentials', false);
+  next();
+});
 
-getData();
+// Routes
+app.use('/', require('./routes'));
+
+const PORT = process.env.PORT || 3000;
+
+app.listen(PORT, () => {
+  console.log('started');
+});

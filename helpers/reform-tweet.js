@@ -5,10 +5,8 @@ module.exports = (tweetArray) => {
   } else {
     correctArray = [tweetArray];
   }
-  newArray = correctArray.map((tweet) => {
-    return {
-      text: tweet,
-    };
-  });
+  const newArray = correctArray.map((tweet) => ({
+    text: tweet,
+  }));
   return newArray;
 };

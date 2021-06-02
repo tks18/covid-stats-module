@@ -5,7 +5,7 @@ async function tweeter(config, tweetArray) {
   try {
     const threader = new TwitThread(config);
     const reformedTweet = reformTweet(tweetArray);
-    const threadPost = await threader.tweetThread(reformedTweet);
+    await threader.tweetThread(reformedTweet);
     return true;
   } catch (e) {
     return false;
