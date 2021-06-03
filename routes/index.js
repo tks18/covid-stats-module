@@ -14,16 +14,14 @@ router.get('/data', async (req, res) => {
   const responses = await getVaccineData();
   const constructedData = await constructData(responses);
   const tweets = constructMessage(constructedData);
-  await tweeter(config, tweets);
+  // await tweeter(config, tweets);
   res.status(200).json(tweets);
 });
 
 router.get('/cases', async (req, res) => {
-  //   const summa = await getCasesData();
-  //   const stats = await populateCurrentStats(summa.DAILY_NOS.data);
-  const responses = await getVaccineData();
-  const constructedData = await constructData(responses);
-  res.status(200).json(constructedData);
+  const summa = await getCasesData();
+  const stats = await populateCurrentStats(summa.DAILY_NOS.data, false);
+  res.status(200).json(stats);
 });
 
 router.get(/(\/.*)+/, (req, res) => {
