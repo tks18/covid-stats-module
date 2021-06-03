@@ -1,19 +1,31 @@
-require('dotenv').config;
-const { TwitThread } = require('twit-thread');
+// Inititalisation
+require('dotenv').config();
+const express = require('express');
+const helmet = require('helmet');
+const mongoSanitize = require('express-mongo-sanitize');
+const xss = require('xss-clean');
 
-// All are Template Code, Will Implement my code Soom
+// Express Configs
+const app = express();
+app.use(express.json({ limit: '50kb' }));
+app.use(helmet());
+app.use(mongoSanitize());
+app.use(xss());
 
-const config = {
-  consumer_key: process.env.API,
-  consumer_secret: process.env.API_SECRET,
-  access_token: process.env.ACCESS,
-  access_token_secret: process.env.ACCESS_KEY,
-};
+// Cors
+app.use((req, res, next) => {
+  res.setHeader('Access-Control-Allow-Methods', '');
+  res.setHeader('Access-Control-Allow-Headers', '');
+  res.setHeader('Access-Control-Allow-Credentials', false);
+  next();
+});
 
-async function tweetThread() {
-  const t = new TwitThread(config);
+// Routes
+app.use('/', require('./routes'));
 
-  await t.tweetThread([{ text: `This is a Test Tweet from the API` }]);
-}
+const PORT = process.env.PORT || 3000;
 
-tweetThread();
+app.listen(PORT, () => {
+  // eslint-disable-next-line no-console
+  console.log('started');
+});
