@@ -13,14 +13,14 @@ module.exports = (state = null, district = null, date) => {
     (district === null || !Number.isInteger(district)) &&
     date
   ) {
-    constructedUrl = `${url}?state=${state}&date=${date}`;
+    constructedUrl = `${url}?state_id=${state}&date=${date}`;
   } else if (
     (state === null || !Number.isInteger(state)) &&
     district !== null &&
     Number.isInteger(district) &&
     date
   ) {
-    constructedUrl = `${url}?district=${district}&date=${date}`;
+    constructedUrl = `${url}?district_id=${district}&date=${date}`;
   } else if (
     state !== null &&
     Number.isInteger(state) &&
@@ -28,7 +28,7 @@ module.exports = (state = null, district = null, date) => {
     Number.isInteger(district) &&
     date
   ) {
-    constructedUrl = `${url}?state=${state}&district=${district}&date=${date}`;
+    constructedUrl = `${url}?state_id=${state}&district_id=${district}&date=${date}`;
   } else {
     constructedUrl = null;
   }

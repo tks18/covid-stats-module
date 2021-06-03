@@ -1,7 +1,13 @@
 const { orderBy } = require('lodash');
-const numberFormatter = require('../number-formatter');
 const dateFormatter = require('../date-formatter');
 const { getPopulationData } = require('../cases/api');
+const {
+  numToLoader,
+  numToObj,
+  parseNumObjToText,
+  checkNegative,
+  objTodelta,
+} = require('../number-helpers');
 
 module.exports = async (vaccineData) => {
   const todayData = vaccineData.today;
@@ -15,44 +21,20 @@ module.exports = async (vaccineData) => {
       .map((state) => ({
         id: state.state_id,
         name: state.state_name,
-        total: {
-          num: state.total,
-          text: numberFormatter(state.total),
-        },
-        dose1: {
-          num: state.partial_vaccinated,
-          text: numberFormatter(state.partial_vaccinated),
-        },
-        dose2: {
-          num: state.totally_vaccinated,
-          text: numberFormatter(state.totally_vaccinated),
-        },
-        today: {
-          num: state.today,
-          text: numberFormatter(state.today),
-        },
+        total: numToObj(state.total),
+        dose1: numToObj(state.partial_vaccinated),
+        dose2: numToObj(state.totally_vaccinated),
+        today: numToObj(state.today),
       })),
     overall: orderBy(statesData, ['total'], ['desc'])
       .slice(0, 5)
       .map((state) => ({
         id: state.state_id,
         name: state.state_name,
-        total: {
-          num: state.total,
-          text: numberFormatter(state.total),
-        },
-        dose1: {
-          num: state.partial_vaccinated,
-          text: numberFormatter(state.partial_vaccinated),
-        },
-        dose2: {
-          num: state.totally_vaccinated,
-          text: numberFormatter(state.totally_vaccinated),
-        },
-        today: {
-          num: state.today,
-          text: numberFormatter(state.today),
-        },
+        total: numToObj(state.total),
+        dose1: numToObj(state.partial_vaccinated),
+        dose2: numToObj(state.totally_vaccinated),
+        today: numToObj(state.today),
       })),
   };
 
@@ -60,93 +42,73 @@ module.exports = async (vaccineData) => {
     date: dateFormatter(todayData.timestamp, true),
     topStates: sortedData,
     tillDate: {
-      dose1: {
-        num: todayData.topBlock.vaccination.tot_dose_1,
-        text: numberFormatter(todayData.topBlock.vaccination.tot_dose_1),
+      dose1: numToObj(todayData.topBlock.vaccination.tot_dose_1),
+      dose2: numToObj(todayData.topBlock.vaccination.tot_dose_2),
+      male: numToObj(todayData.topBlock.vaccination.male),
+      female: numToObj(todayData.topBlock.vaccination.female),
+      others: numToObj(todayData.topBlock.vaccination.others),
+      aefi: {
+        ...numToObj(todayData.topBlock.vaccination.aefi),
+        perc: todayData.aefiPercentage,
       },
-      dose2: {
-        num: todayData.topBlock.vaccination.tot_dose_2,
-        text: numberFormatter(todayData.topBlock.vaccination.tot_dose_2),
-      },
-      male: {
-        num: todayData.topBlock.vaccination.male,
-        text: numberFormatter(todayData.topBlock.vaccination.male),
-      },
-      female: {
-        num: todayData.topBlock.vaccination.female,
-        text: numberFormatter(todayData.topBlock.vaccination.female),
-      },
-      adverseEffects: {
-        num: todayData.topBlock.vaccination.aefi,
-        text: numberFormatter(todayData.topBlock.vaccination.aefi),
-      },
+      ageWise: parseNumObjToText(todayData.vaccinationByAge),
       population: {
-        num: populationData.data.total,
-        text: numberFormatter(populationData.data.total),
+        ...numToObj(populationData.data.total),
         percentage: {
-          dose1: `${+(
-            (todayData.topBlock.vaccination.tot_dose_1 /
-              populationData.data.total) *
-            100
-          ).toFixed(2)}%`,
-          dose2: `${+(
-            (todayData.topBlock.vaccination.tot_dose_2 /
-              populationData.data.total) *
-            100
-          ).toFixed(2)}%`,
+          dose1: numToLoader(
+            +(
+              (todayData.topBlock.vaccination.tot_dose_1 /
+                populationData.data.total) *
+              100
+            ).toFixed(2),
+            '%',
+          ),
+          dose2: numToLoader(
+            +(
+              (todayData.topBlock.vaccination.tot_dose_2 /
+                populationData.data.total) *
+              100
+            ).toFixed(2),
+            '%',
+          ),
         },
       },
       comparisons: {
-        dose1: {
-          num: `${+(
+        dose1: checkNegative(
+          +(
             ((todayData.topBlock.vaccination.today_dose_one -
               yestData.topBlock.vaccination.today_dose_one) /
               yestData.topBlock.vaccination.today_dose_one) *
             100
-          ).toFixed(2)}%`,
-          negative:
-            +(
-              ((todayData.topBlock.vaccination.today_dose_one -
-                yestData.topBlock.vaccination.today_dose_one) /
-                yestData.topBlock.vaccination.today_dose_one) *
-              100
-            ).toFixed(2) < 0,
-        },
-        dose2: {
-          num: `${+(
+          ).toFixed(2),
+          '%',
+        ),
+        dose2: checkNegative(
+          +(
             ((todayData.topBlock.vaccination.today_dose_two -
               yestData.topBlock.vaccination.today_dose_two) /
               yestData.topBlock.vaccination.today_dose_two) *
             100
-          ).toFixed(2)}%`,
-          negative:
-            +(
-              ((todayData.topBlock.vaccination.today_dose_two -
-                yestData.topBlock.vaccination.today_dose_two) /
-                yestData.topBlock.vaccination.today_dose_two) *
-              100
-            ).toFixed(2) < 0,
-        },
+          ).toFixed(2),
+          '%',
+        ),
       },
     },
     today: {
-      total: {
-        num: todayData.topBlock.vaccination.today,
-        text: numberFormatter(todayData.topBlock.vaccination.today),
-      },
-      dose1: {
-        num: todayData.topBlock.vaccination.today_dose_one,
-        text: numberFormatter(todayData.topBlock.vaccination.today_dose_one),
-      },
-      dose2: {
-        num: todayData.topBlock.vaccination.today_dose_two,
-        text: numberFormatter(todayData.topBlock.vaccination.today_dose_two),
-      },
+      total: numToObj(todayData.topBlock.vaccination.today),
+      dose1: numToObj(todayData.topBlock.vaccination.today_dose_one),
+      dose2: numToObj(todayData.topBlock.vaccination.today_dose_two),
+      male: numToObj(todayData.topBlock.vaccination.today_male),
+      female: numToObj(todayData.topBlock.vaccination.today_female),
+      others: numToObj(todayData.topBlock.vaccination.today_others),
+      aefi: numToObj(todayData.topBlock.vaccination.today_aefi),
+      ageWise: parseNumObjToText(
+        objTodelta(todayData.vaccinationByAge, yestData.vaccinationByAge),
+      ),
     },
     vaccineWiseStats: {
       covishield: {
-        num: todayData.topBlock.vaccination.covishield,
-        text: numberFormatter(todayData.topBlock.vaccination.covishield),
+        ...numToObj(todayData.topBlock.vaccination.covishield),
         perc: `${+(
           (todayData.topBlock.vaccination.covishield /
             (todayData.topBlock.vaccination.tot_dose_1 +
@@ -155,8 +117,7 @@ module.exports = async (vaccineData) => {
         ).toFixed(2)}%`,
       },
       covaxin: {
-        num: todayData.topBlock.vaccination.covaxin,
-        text: numberFormatter(todayData.topBlock.vaccination.covaxin),
+        ...numToObj(todayData.topBlock.vaccination.covaxin),
         perc: `${+(
           (todayData.topBlock.vaccination.covaxin /
             (todayData.topBlock.vaccination.tot_dose_1 +
@@ -165,8 +126,7 @@ module.exports = async (vaccineData) => {
         ).toFixed(2)}%`,
       },
       sputnik: {
-        num: todayData.topBlock.vaccination.sputnik,
-        text: numberFormatter(todayData.topBlock.vaccination.sputnik),
+        ...numToObj(todayData.topBlock.vaccination.sputnik),
         perc: `${+(
           (todayData.topBlock.vaccination.sputnik /
             (todayData.topBlock.vaccination.tot_dose_1 +

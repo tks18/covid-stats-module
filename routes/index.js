@@ -7,6 +7,8 @@ const populateCurrentStats = require('../helpers/cases/populateCurrentStats');
 const { getVaccineData } = require('../helpers/vaccination/api');
 const constructData = require('../helpers/vaccination/construct-data');
 const constructMessage = require('../helpers/vaccination/construct-message');
+const constructCasesMessage = require('../helpers/cases/construct-message');
+const populateHistoricalStats = require('../helpers/cases/populateHistoricalStats');
 
 const router = express.Router();
 
@@ -20,7 +22,9 @@ router.get('/data', async (req, res) => {
 
 router.get('/cases', async (req, res) => {
   const summa = await getCasesData();
-  const stats = await populateCurrentStats(summa.DAILY_NOS.data, false);
+  const stats = await populateHistoricalStats(summa.TOTAL_NOS.data);
+  // const message = constructCasesMessage(stats);
+  // await tweeter(config, message);
   res.status(200).json(stats);
 });
 

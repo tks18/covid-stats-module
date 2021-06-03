@@ -29,7 +29,24 @@ module.exports = (rawData) => {
           vaccinated,
           population,
           lastUpdated: stateData.meta.last_updated,
+          districts: [],
         };
+        const { districts } = stateData;
+        for (const district in districts) {
+          if (districts.hasOwnProperty(district)) {
+            const districtLevelData = districts[district];
+            const districtData = {
+              name: district,
+              confirmed: districtLevelData.total.confirmed,
+              deceased: districtLevelData.total.deceased,
+              recovered: districtLevelData.total.recovered,
+              tested: districtLevelData?.total?.tested,
+              vaccinated: districtLevelData?.total?.vaccinated,
+              population: districtLevelData?.meta?.population,
+            };
+            relevantData.districts.push(districtData);
+          }
+        }
         populatedStats.states.push(relevantData);
       }
     }
