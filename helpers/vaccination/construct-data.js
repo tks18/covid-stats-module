@@ -9,38 +9,54 @@ const {
   objTodelta,
 } = require('../number-helpers');
 
-module.exports = async (vaccineData) => {
+module.exports = async (vaccineData, stateLevel, stateId) => {
   const todayData = vaccineData.today;
   const yestData = vaccineData.yesterday;
   const populationData = await getPopulationData();
+  const groupSubGroupData = (subGroup) => ({
+    id: stateLevel ? subGroup?.district_id : subGroup?.state_id,
+    name: stateLevel ? subGroup?.district_name : subGroup?.state_name,
+    state: subGroup?.state_name,
+    stateID: subGroup?.state_id,
+    total: numToObj(subGroup.total),
+    dose1: numToObj(subGroup.partial_vaccinated),
+    dose2: numToObj(subGroup.totally_vaccinated),
+    today: numToObj(subGroup.today),
+  });
 
-  const statesData = todayData.getBeneficiariesGroupBy;
+  const subGroupData = todayData.getBeneficiariesGroupBy;
   const sortedData = {
-    today: orderBy(statesData, ['today'], ['desc'])
-      .slice(0, 5)
-      .map((state) => ({
-        id: state.state_id,
-        name: state.state_name,
-        total: numToObj(state.total),
-        dose1: numToObj(state.partial_vaccinated),
-        dose2: numToObj(state.totally_vaccinated),
-        today: numToObj(state.today),
-      })),
-    overall: orderBy(statesData, ['total'], ['desc'])
-      .slice(0, 5)
-      .map((state) => ({
-        id: state.state_id,
-        name: state.state_name,
-        total: numToObj(state.total),
-        dose1: numToObj(state.partial_vaccinated),
-        dose2: numToObj(state.totally_vaccinated),
-        today: numToObj(state.today),
-      })),
+    today: {
+      top: orderBy(subGroupData, ['today'], ['desc'])
+        .slice(0, 5)
+        .map(groupSubGroupData),
+      least: orderBy(subGroupData, ['today'], ['asc'])
+        .slice(0, 5)
+        .map(groupSubGroupData),
+    },
+    overall: {
+      top: orderBy(subGroupData, ['total'], ['desc'])
+        .slice(0, 5)
+        .map(groupSubGroupData),
+      least: orderBy(subGroupData, ['total'], ['asc'])
+        .slice(0, 5)
+        .map(groupSubGroupData),
+    },
   };
 
+  const connectedStateAPIID =
+    stateLevel &&
+    stateId &&
+    populationData.data.states.filter((state) => state.id === stateId)[0];
+
+  const relevantPopulationData = stateLevel
+    ? connectedStateAPIID.population
+    : populationData.data.total;
+
   const overallVaccinationsStats = {
+    name: stateLevel ? connectedStateAPIID.state : 'India',
     date: dateFormatter(todayData.timestamp, true),
-    topStates: sortedData,
+    subgroups: sortedData,
     tillDate: {
       dose1: numToObj(todayData.topBlock.vaccination.tot_dose_1),
       dose2: numToObj(todayData.topBlock.vaccination.tot_dose_2),
@@ -53,12 +69,12 @@ module.exports = async (vaccineData) => {
       },
       ageWise: parseNumObjToText(todayData.vaccinationByAge),
       population: {
-        ...numToObj(populationData.data.total),
+        ...numToObj(relevantPopulationData),
         percentage: {
           dose1: numToLoader(
             +(
               (todayData.topBlock.vaccination.tot_dose_1 /
-                populationData.data.total) *
+                relevantPopulationData) *
               100
             ).toFixed(2),
             '%',
@@ -66,7 +82,7 @@ module.exports = async (vaccineData) => {
           dose2: numToLoader(
             +(
               (todayData.topBlock.vaccination.tot_dose_2 /
-                populationData.data.total) *
+                relevantPopulationData) *
               100
             ).toFixed(2),
             '%',

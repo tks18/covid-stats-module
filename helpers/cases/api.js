@@ -1,10 +1,6 @@
 const axios = require('axios');
+const constructUrl = require('./construct-url');
 const populateHistoricalStats = require('./populateHistoricalStats');
-
-const api = {
-  TOTAL_NOS: 'https://api.covid19india.org/v4/min/data.min.json',
-  DAILY_NOS: 'https://api.covid19india.org/v4/min/timeseries.min.json',
-};
 
 const getDatafromAPI = (apiPath) => {
   const response = axios
@@ -31,8 +27,9 @@ const getDatafromAPI = (apiPath) => {
   return response;
 };
 
-module.exports.getCasesData = async () => {
+module.exports.getCasesData = async (stateLevel, stateId) => {
   const responses = {};
+  const api = constructUrl(stateLevel, stateId);
   for (const path in api) {
     const response = await getDatafromAPI(api[path]);
     responses[path] = response;
@@ -41,12 +38,15 @@ module.exports.getCasesData = async () => {
 };
 
 module.exports.getPopulationData = async () => {
-  const response = await getDatafromAPI(api.TOTAL_NOS);
+  const api = constructUrl();
+  const response = await getDatafromAPI(api.totalNosData);
   if (response.success) {
     const stats = populateHistoricalStats(response.data);
     const populationStats = {};
     populationStats.states = stats.states.map((state) => ({
       state: state.name,
+      id: state.id,
+      code: state.code,
       population: state.population,
     }));
     populationStats.total = stats.population;

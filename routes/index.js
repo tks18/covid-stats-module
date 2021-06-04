@@ -1,29 +1,24 @@
 const express = require('express');
 const config = require('../configs/twitter-config');
+const buildCasesTweets = require('../helpers/cases/buildCasesTweets');
 const tweeter = require('../helpers/tweeter');
 
-const { getCasesData } = require('../helpers/cases/api');
-const populateCurrentStats = require('../helpers/cases/populateCurrentStats');
 const { getVaccineData } = require('../helpers/vaccination/api');
 const constructData = require('../helpers/vaccination/construct-data');
 const constructMessage = require('../helpers/vaccination/construct-message');
-const constructCasesMessage = require('../helpers/cases/construct-message');
-const populateHistoricalStats = require('../helpers/cases/populateHistoricalStats');
 
 const router = express.Router();
 
 router.get('/data', async (req, res) => {
   const responses = await getVaccineData();
   const constructedData = await constructData(responses);
-  const tweets = constructMessage(constructedData);
+  const tweets = constructMessage(constructedData, true);
   // await tweeter(config, tweets);
-  res.status(200).json(tweets);
+  res.status(200).json({ tweets });
 });
 
 router.get('/cases', async (req, res) => {
-  const summa = await getCasesData();
-  const stats = await populateHistoricalStats(summa.TOTAL_NOS.data, true, 'TN');
-  // const message = constructCasesMessage(stats);
+  const stats = await buildCasesTweets('complete', 'TN', false);
   // await tweeter(config, message);
   res.status(200).json(stats);
 });

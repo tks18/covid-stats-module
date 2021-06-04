@@ -79,9 +79,9 @@ module.exports = (timeData, isToday, stateLevel, stateId) => {
         const stats = {
           name: district,
           ...fillSubGroupData(
-            districtData.dates[today].total,
-            districtData.dates[yesterday].total,
-            districtData.dates[prevYesterday].total,
+            districtData?.dates[today]?.total,
+            districtData?.dates[yesterday]?.total,
+            districtData?.dates[prevYesterday]?.total,
           ),
         };
         currentStats.districts.push(stats);

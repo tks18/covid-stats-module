@@ -8,8 +8,8 @@ const objectToArray = (object) => {
   return array;
 };
 
-module.exports = (statsData) => {
-  const messages = dailyVaccinationSummary(statsData);
+module.exports = (statsData, stateLevel) => {
+  const messages = dailyVaccinationSummary(statsData, stateLevel);
   const tweets = objectToArray(messages);
   return tweets;
 };
