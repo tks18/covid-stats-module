@@ -22,14 +22,14 @@ router.get('/data', async (req, res) => {
 
 router.get('/cases', async (req, res) => {
   const summa = await getCasesData();
-  const stats = await populateHistoricalStats(summa.TOTAL_NOS.data);
+  const stats = await populateHistoricalStats(summa.TOTAL_NOS.data, true, 'TN');
   // const message = constructCasesMessage(stats);
   // await tweeter(config, message);
   res.status(200).json(stats);
 });
 
 router.get(/(\/.*)+/, (req, res) => {
-  res.status(200).json({ message: 'Server is under Progress' });
+  res.status(200).json({ message: 'Server is under Construction' });
 });
 
 module.exports = router;

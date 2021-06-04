@@ -3,7 +3,7 @@ const UP = '🔼';
 
 module.exports = (statsData) => {
   const messages = {};
-  messages.overallVaccinationMessage = `${statsData.date} 🥼 | Vaccinations Summary\n\nDose 1 - ${statsData.tillDate.dose1.text}\n${statsData.tillDate.population.percentage.dose1.loader}\nPopulation Covered - ${statsData.tillDate.population.percentage.dose1.num}\n\nDose 2 - ${statsData.tillDate.dose2.text}\n${statsData.tillDate.population.percentage.dose2.loader}\nPopulation Covered - ${statsData.tillDate.population.percentage.dose2.num}\n\n#Coronavirus #BreaktheChain\n\n🧵 See Thread for More Details`;
+  messages.overallVaccinationMessage = `${statsData.date} 🥼 | Vaccinations Summary\n\nDose 1 - ${statsData.tillDate.dose1.text}\n${statsData.tillDate.population.percentage.dose1.loader}\nPopulation Covered - ${statsData.tillDate.population.percentage.dose1.num}\n\nDose 2 - ${statsData.tillDate.dose2.text}\n${statsData.tillDate.population.percentage.dose2.loader}\nPopulation Covered - ${statsData.tillDate.population.percentage.dose2.num}\n\n#India #BreaktheChain\n\n🧵 See Thread for More Details`;
 
   messages.todayVaccinationMessage = `Today's Vaccinations 📅\n\nDose 1: ${statsData.today.total.num} Doses\nDose 2: ${statsData.today.dose2.num} Doses\n\n#Coronavirus #BreaktheChain\n\nMore Details Below 👇`;
 

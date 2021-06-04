@@ -1,4 +1,6 @@
-module.exports = (rawData) => {
+const statesList = require('../states');
+
+module.exports = (rawData, stateLevel, stateId) => {
   const populatedStats = {
     states: [],
   };
@@ -20,8 +22,13 @@ module.exports = (rawData) => {
         populatedStats.population = population;
         populatedStats.lastUpdated = stateData.meta.last_updated;
       } else {
+        const stateDetails = statesList.filter(
+          (states) => states.api_code === state,
+        )[0];
         const relevantData = {
-          name: state,
+          code: state,
+          name: stateDetails.state_name,
+          id: stateDetails.state_id,
           confirmed,
           deceased,
           recovered,
@@ -51,5 +58,11 @@ module.exports = (rawData) => {
       }
     }
   }
-  return populatedStats;
+  if (!stateLevel) {
+    return populatedStats;
+  }
+  const stateData = populatedStats.states.filter(
+    (state) => state.code === stateId,
+  )[0];
+  return stateData;
 };
