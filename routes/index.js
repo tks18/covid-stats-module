@@ -1,18 +1,15 @@
 const express = require('express');
 const config = require('../configs/twitter-config');
-const buildCasesTweets = require('../helpers/cases/buildCasesTweets');
 const tweeter = require('../helpers/tweeter');
-
-const { getVaccineData } = require('../helpers/vaccination/api');
-const constructData = require('../helpers/vaccination/construct-data');
-const constructMessage = require('../helpers/vaccination/construct-message');
+const buildCasesTweets = require('../helpers/cases/buildCasesTweets');
+const buildVaccinationTweets = require('../helpers/vaccination/buildVaccinationTweets');
 
 const router = express.Router();
 
-router.get('/data', async (req, res) => {
-  const responses = await getVaccineData();
-  const constructedData = await constructData(responses);
-  const tweets = constructMessage(constructedData, true);
+router.get('/data/:type/:id?', async (req, res) => {
+  const id = req.params.id && req.params.id;
+  const { type } = req.params;
+  const tweets = await buildVaccinationTweets(type, Number(id));
   // await tweeter(config, tweets);
   res.status(200).json({ tweets });
 });
