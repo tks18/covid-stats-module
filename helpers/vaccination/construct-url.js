@@ -1,5 +1,7 @@
+const API_URL = 'https://api.cowin.gov.in/api/v1/reports/v2/getPublicReports';
+
 module.exports = (state = null, district = null, date) => {
-  const url = process.env.API_URL;
+  const url = API_URL;
   let constructedUrl;
   if (
     (state === null || !Number.isInteger(state)) &&
