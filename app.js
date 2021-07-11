@@ -1,31 +1,16 @@
-// Inititalisation
-require('dotenv').config();
-const express = require('express');
-const helmet = require('helmet');
-const mongoSanitize = require('express-mongo-sanitize');
-const xss = require('xss-clean');
+const twitterConfig = require('./configs/twitter-config');
+const tweeter = require('./helpers/tweeter');
+const buildCasesTweets = require('./helpers/cases/buildCasesTweets');
+const buildVaccinationTweets = require('./helpers/vaccination/buildVaccinationTweets');
 
-// Express Configs
-const app = express();
-app.use(express.json({ limit: '50kb' }));
-app.use(helmet());
-app.use(mongoSanitize());
-app.use(xss());
+module.exports = {
+  tweeter,
+  twitterConfig,
+  buildCasesTweets,
+  buildVaccinationTweets,
+};
 
-// Cors
-app.use((req, res, next) => {
-  res.setHeader('Access-Control-Allow-Methods', '');
-  res.setHeader('Access-Control-Allow-Headers', '');
-  res.setHeader('Access-Control-Allow-Credentials', false);
-  next();
-});
-
-// Routes
-app.use('/', require('./routes'));
-
-const PORT = process.env.PORT || 3000;
-
-app.listen(PORT, () => {
-  // eslint-disable-next-line no-console
-  console.log('started');
-});
+module.exports.tweeter = tweeter;
+module.exports.buildCasesTweets = buildCasesTweets;
+module.exports.buildVaccinationTweets = buildVaccinationTweets;
+module.exports.twitterConfig = twitterConfig;

@@ -1,7 +1,7 @@
 {
-  "name": "twitter-vaccine-stats-bot",
-  "version": "0.0.1",
-  "description": "A Twitter Bot to Tweet Various Vaccine Statistics Related to India",
+  "name": "vaccine-stats-plugin",
+  "version": "0.1.0",
+  "description": "A Module to Get Various Vaccine Statistics Related to India from Various Sources and Additionally Can tweet with the Given Configuration",
   "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -26,16 +26,10 @@
   "homepage": "https://github.com/tks18/twitter-vaccine-stats-bot#readme",
   "dependencies": {
     "axios": "^0.21.1",
-    "bcrypt": "^5.0.1",
     "comma-number": "^2.1.0",
-    "dotenv": "^10.0.0",
-    "express": "^4.17.1",
-    "express-mongo-sanitize": "^2.1.0",
-    "helmet": "^4.6.0",
     "human-format": "^0.11.0",
     "lodash": "^4.17.21",
-    "twit-thread": "^2.1.0",
-    "xss-clean": "^0.1.1"
+    "twit-thread": "^2.1.0"
   },
   "devDependencies": {
     "eslint": "^7.27.0",
