@@ -1,6 +1,6 @@
 {
   "name": "vaccine-stats-plugin",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "A Module to Get Various Vaccine Statistics Related to India from Various Sources and Additionally Can tweet with the Given Configuration",
   "main": "app.js",
   "scripts": {
@@ -9,9 +9,10 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/tks18/twitter-vaccine-stats-bot.git"
+    "url": "git+https://github.com/tks18/covid-stats-module.git"
   },
   "keywords": [
+    "daily cases",
     "twitter",
     "bot",
     "twitter-bot",
@@ -21,9 +22,9 @@
   "author": "tks18",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/tks18/twitter-vaccine-stats-bot/issues"
+    "url": "https://github.com/tks18/covid-stats-module/issues"
   },
-  "homepage": "https://github.com/tks18/twitter-vaccine-stats-bot#readme",
+  "homepage": "https://github.com/tks18/covid-stats-module#readme",
   "dependencies": {
     "axios": "^0.21.1",
     "comma-number": "^2.1.0",
